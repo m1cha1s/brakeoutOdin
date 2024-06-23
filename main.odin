@@ -134,6 +134,7 @@ update_game :: proc() {
                 re := rl.GetCollisionRec(ball_rect, block_rect)
 
                 b.destroyed = true
+                w.brick_count -= 1
                 new_ball_pos = w.ball_pos // Reset ball position
                 if rand.float32() >= 0.5 { 
                     w.ball_vel.x *= -1 
@@ -164,7 +165,10 @@ update_game :: proc() {
         if new_ball_pos.y + BALL_SIZE > HEIGHT {
             w.s = .GameOver
         }
-
+        
+        if w.brick_count <= 0 {
+            w.s = .GameOver
+        }
     }
     
     
@@ -265,6 +269,8 @@ init_world :: proc(scr: screen = screen.Title, w: ^world = nil) -> ^world {
             i += 1
         }
     }
+    
+    w.brick_count = cast(i32)i
 
     w.ball_pos = v2{WIDTH/2, PADDLE_HEIGHT-BALL_SIZE-5}
     w.ball_vel = v2{BALL_SPEED, -BALL_SPEED}
